@@ -1,0 +1,6 @@
+# Frontend-specific ignores — root .gitignore covers the rest
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.local
