@@ -757,3 +757,4 @@ export function CaseReportResult({ data, onExport }) {
     </div>
   );
 }
+

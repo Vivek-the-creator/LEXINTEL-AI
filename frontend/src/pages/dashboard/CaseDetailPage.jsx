@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { casesApi } from "../../api/cases";
 import { uploadsApi } from "../../api/uploads";
+import { reportsApi } from "../../api/reports";
 import Button from "../../components/ui/Button";
 import AIProgressPanel from "../../components/ui/AIProgressPanel";
 import {
@@ -169,6 +170,37 @@ export default function CaseDetailPage() {
     }
   }, [caseId, reanalyzeFiles, caseData, fetchCase]);
 
+  const exportPdf = useCallback(async () => {
+    try {
+      await reportsApi.downloadCasePdf(caseId, caseData?.case_name);
+    } catch {
+      toast.error("PDF export failed");
+    }
+  }, [caseId, caseData]);
+
+  const saveReport = useCallback(async () => {
+    if (!caseData?.case_report) return toast.error("No report available");
+    try {
+      await reportsApi.save({
+        case_id: caseId,
+        case_name: caseData.case_name,
+        report_data: caseData.case_report,
+        outcome_prediction: caseData.outcome_prediction,
+        legal_strategy: caseData.legal_strategy,
+        legal_drafts: caseData.legal_drafts || [],
+        document_intelligence: caseData.document_intelligence,
+        legal_research: caseData.legal_research,
+        similar_cases: caseData.similar_cases || [],
+        evidence_analysis: caseData.evidence_analysis,
+        evidence_timeline: caseData.evidence_timeline || [],
+        missing_evidence_hints: caseData.missing_evidence_hints || [],
+      });
+      toast.success("Report saved to Reports section");
+    } catch {
+      toast.error("Failed to save report");
+    }
+  }, [caseId, caseData]);
+
   // ── Export report as Markdown ───────────────────────────────────────────────
   const exportMarkdown = useCallback(() => {
     const c = caseData;
@@ -261,9 +293,17 @@ export default function CaseDetailPage() {
         </div>
         <div className="flex gap-2 flex-shrink-0">
           {c.case_report && (
-            <Button size="sm" variant="secondary" onClick={exportMarkdown} className="gap-2">
-              <Download className="w-4 h-4" /> Export Report
-            </Button>
+            <>
+              <Button size="sm" variant="secondary" onClick={saveReport} className="gap-2">
+                <Download className="w-4 h-4" /> Save Report
+              </Button>
+              <Button size="sm" variant="secondary" onClick={exportPdf} className="gap-2">
+                <Download className="w-4 h-4" /> PDF
+              </Button>
+              <Button size="sm" variant="secondary" onClick={exportMarkdown} className="gap-2">
+                <Download className="w-4 h-4" /> Markdown
+              </Button>
+            </>
           )}
         </div>
       </div>

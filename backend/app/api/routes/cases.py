@@ -419,6 +419,36 @@ async def reanalyze_case(
     )
 
 
+# ── Export case report as PDF ───────────────────────────────────────────────
+
+@router.get("/{case_id}/export/pdf")
+async def export_case_pdf(
+    case_id: str,
+    current_user: dict = Depends(get_current_user),
+    db: AsyncIOMotorDatabase = Depends(get_db),
+):
+    """Generate and download the AI case report as a PDF."""
+    import io
+    from app.api.routes.reports import _build_pdf_bytes
+
+    case = await get_case(db, case_id, current_user["id"])
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    pdf_bytes = _build_pdf_bytes(
+        case_name=case.get("case_name", "Case"),
+        report=case.get("case_report") or {},
+        prediction=case.get("outcome_prediction") or {},
+        strategy=case.get("legal_strategy") or {},
+    )
+    filename = f"{case.get('case_name', 'report').replace(' ', '_')}_AI_Report.pdf"
+    return StreamingResponse(
+        io.BytesIO(pdf_bytes),
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
 # ── 9. Update case with new analysis results ──────────────────────────────────
 
 @router.patch("/{case_id}/analysis")

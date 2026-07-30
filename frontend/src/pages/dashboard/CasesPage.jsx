@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { uploadsApi } from "../../api/uploads";
 import { casesApi } from "../../api/cases";
+import { reportsApi } from "../../api/reports";
 import Button from "../../components/ui/Button";
 import AIProgressPanel from "../../components/ui/AIProgressPanel";
 import {
@@ -283,9 +284,10 @@ export default function CasesPage() {
   const saveCase = useCallback(async () => {
     if (!result) return;
     setSaving(true);
+    const name = caseName.trim() || result.case_name || "Untitled Case";
     try {
       const res = await casesApi.save({
-        case_name: caseName.trim() || result.case_name || "Untitled Case",
+        case_name: name,
         session_id: result.session_id,
         document_intelligence: result.document_intelligence,
         legal_research: result.legal_research,
@@ -304,6 +306,25 @@ export default function CasesPage() {
         case_workspace: result.case_workspace,
         metadata: result.metadata || {},
       });
+      // Also save to reports if we have a case report
+      if (result.case_report) {
+        try {
+          await reportsApi.save({
+            case_id: res.data.id,
+            case_name: name,
+            report_data: result.case_report,
+            outcome_prediction: result.outcome_prediction,
+            legal_strategy: result.legal_strategy,
+            legal_drafts: result.legal_drafts || [],
+            document_intelligence: result.document_intelligence,
+            legal_research: result.legal_research,
+            similar_cases: result.similar_cases || [],
+            evidence_analysis: result.evidence_analysis,
+            evidence_timeline: result.evidence_timeline || [],
+            missing_evidence_hints: result.missing_evidence_hints || [],
+          });
+        } catch {}
+      }
       toast.success("Case saved!");
       navigate(`/dashboard/my-cases/${res.data.id}`);
     } catch (err) {

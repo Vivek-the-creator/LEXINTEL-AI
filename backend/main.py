@@ -6,7 +6,7 @@ import os
 
 from app.core.config import settings
 from app.db.database import connect_db, disconnect_db
-from app.api.routes import auth, users, uploads, ai, agents, cases
+from app.api.routes import auth, users, uploads, ai, agents, cases, chat, reports
 from app.core.exceptions import register_exception_handlers
 
 
@@ -43,6 +43,8 @@ app.include_router(uploads.router, prefix="/api/uploads", tags=["Uploads"])
 app.include_router(ai.router, prefix="/api/ai", tags=["AI"])
 app.include_router(agents.router, prefix="/api/agents", tags=["Phase 3A Agents"])
 app.include_router(cases.router, prefix="/api/cases", tags=["Case Workspace"])
+app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
+app.include_router(reports.router, prefix="/api/reports", tags=["Reports"])
 
 app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIR, check_dir=False), name="uploads")
 

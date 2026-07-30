@@ -454,5 +454,30 @@ class PromptRegistry:
         ))
 
 
+        # ── Chat / Conversation ───────────────────────────────────────────────
+        self.register(Prompt(
+            name="legal_chat",
+            version="1.0.0",
+            description="Multi-turn legal assistant chatbot with case context",
+            tags=["chat", "conversation"],
+            system=(
+                "You are LexIntel AI, an expert Indian legal intelligence assistant. "
+                "You help citizens, lawyers, and judges understand legal matters clearly. "
+                "When case context is provided, answer specifically from that case data. "
+                "Always cite relevant laws, sections, and precedents when applicable. "
+                "If you are uncertain, say so clearly. "
+                "Never fabricate case citations or legal provisions. "
+                "End every response with a brief actionable next step for the user."
+            ),
+            user_template=(
+                "$case_context"
+                "Conversation so far:\n$history\n\n"
+                "User: $question\n\n"
+                "Provide a clear, helpful legal answer. "
+                "If the question relates to the case context above, answer specifically from it."
+            ),
+        ))
+
+
 # Singleton registry — import this everywhere
 prompt_registry = PromptRegistry()
