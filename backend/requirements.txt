@@ -24,7 +24,7 @@ numpy==1.26.4
 
 # ── Phase 3A — Document Processing & OCR ─────────────────────────────────
 pypdf==4.2.0
-paddlepaddle==2.6.1
+paddlepaddle==2.6.2
 paddleocr==2.7.3
 
 # ── Phase 3B — PDF Generation ───────────────────────────────────────────────

@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 os.environ.setdefault("JWT_SECRET_KEY", "test-secret-key-for-pytest")
 os.environ.setdefault("MONGODB_URL", "mongodb://localhost:27017")
 os.environ.setdefault("GROQ_API_KEY", "test-key")
-os.environ.setdefault("LLM_MODEL", "llama-3.1-8b-instant")
+os.environ.setdefault("LLM_MODEL", "openai/gpt-oss-120b")
 
 
 @pytest.fixture

@@ -43,9 +43,9 @@ class Settings(BaseSettings):
     # ── AI / LLM ──────────────────────────────────────────────────────────────
     GROQ_API_KEY: Optional[str] = None
     LLM_PROVIDER: str = "groq"
-    LLM_MODEL: str = "llama3-8b-8192"
+    LLM_MODEL: str = "openai/gpt-oss-120b"
     LLM_TEMPERATURE: float = 0.1
-    LLM_MAX_TOKENS: int = 2048
+    LLM_MAX_TOKENS: int = 4096
     LLM_TIMEOUT: int = 60
     LLM_MAX_RETRIES: int = 3
     LLM_STREAMING: bool = True
